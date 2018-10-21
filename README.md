@@ -5,7 +5,12 @@ Written to allow easier interaction with the TCGplayer api.
 
 ## Example
 
-`api = tcg_py.api(bearer='bearer_token')`
+```
+from tcg_player import *
+api = api.Handler(bearer='bearer_token')
+# or
+api = api.Handler(public='public_key', private='private_key')
+```
 
 ## Requirements
 
