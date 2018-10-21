@@ -25,7 +25,7 @@ class Handler(object):
                              " and private arguments. You provided: "
                              + ", ".join(kwargs.keys()))
 
-    def _get_login_data(self, public, private):
+    def __get_login_data(self, public, private):
         token_url = "https://api.tcgplayer.com/token"
         data = "grant_type=client_credentials&client_id={0}&client_secret={1}"
         data = data.format(public, private)
