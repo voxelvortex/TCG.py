@@ -1,2 +1,3 @@
 .git/
 .gitattributes
+tcg_py/__pycache__/

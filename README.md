@@ -1,15 +1,15 @@
 # TCG.py
-TCG is a API wrapper for the TCGplayer written in python
+TCG is a API wrapper for the TCGplayer API written in python
 
-Written to allow easier interaction with the TCGplayer api.
+This library was written to allow easier interaction with the TCGplayer API.
 
 ## Example
 
 ```
-from tcg_player import *
-api = api.Handler(bearer='bearer_token')
+from tcg_py.api import Handler
+api = Handler(bearer='bearer_token')
 # or
-api = api.Handler(public='public_key', private='private_key')
+api = Handler(public='public_key', private='private_key')
 ```
 
 ## Requirements
