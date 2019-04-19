@@ -11,7 +11,7 @@ class Handler(object):
         if "bearer" in kwargs:
             self.bearer = kwargs["bearer"]
         elif "public" in kwargs and "private" in kwargs:
-            self._get_login_data(kwargs["public"], kwargs["private"])
+            self.__get_login_data(kwargs["public"], kwargs["private"])
 
             if "error" in self.login_data:
                 # replace with custom exception later? :thinking:
@@ -21,7 +21,7 @@ class Handler(object):
             else:
                 self.bearer = self.login_data["access_token"]
         else:
-            raise ValueError("Test requirers a bearer or both public"
+            raise ValueError("Test requires a bearer or both public"
                              " and private arguments. You provided: "
                              + ", ".join(kwargs.keys()))
 
@@ -31,3 +31,14 @@ class Handler(object):
         data = data.format(public, private)
         response = requests.request("POST", token_url, data=data)
         self.login_data = json.loads(response.text)
+
+    def __check_bearer(self):
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "bearer {0}".format(self.bearer)
+        }
+        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories"
+        response = requests.request("GET", url, headers=headers)  # , json=body)
+        # response = requests.get(url, headers=headers)
+        data = json.loads(response.text)
+        return data["success"]
