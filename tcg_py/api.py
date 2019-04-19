@@ -39,6 +39,5 @@ class Handler(object):
         }
         url = "http://api.tcgplayer.com/v1.19.0/catalog/categories"
         response = requests.request("GET", url, headers=headers)  # , json=body)
-        # response = requests.get(url, headers=headers)
         data = json.loads(response.text)
         return data["success"]
