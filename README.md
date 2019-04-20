@@ -11,18 +11,18 @@ This library was written to allow easier interaction with the TCG Player API.
 
 ## Installation
 
-```
+```cmd
 git clone https://github.com/voxelvortex/TCG.py.git
 cd TCG.py
 python setup.py sdist
 cd dist
-pip install tcgplayer-1.0.tar.gz
+pip install TCG.py-x.x.tar.gz
 pip install requests
 ```
 
 ## Example
 
-```
+```python
 from tcg_py.api import Handler
 api = Handler(bearer='bearer_token')
 # or

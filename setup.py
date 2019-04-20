@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="TCGPlayer",
+    name="TCG.py",
     version="1.0",
     author="Michael Scalzetti, Matthew Sprague, Luca Pieples",
     author_email="maestromikecode@gmail.com",
