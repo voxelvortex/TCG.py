@@ -1,7 +1,11 @@
 # TCG.py
-TCG is a API wrapper for the TCGplayer API written in python
+TCG is a API wrapper for the TCG Player API written in python
 
-This library was written to allow easier interaction with the TCGplayer API.
+This library was written to allow easier interaction with the TCG Player API.
+
+## Requirements
+
+- Python 3+
 
 ## Example
 
@@ -12,10 +16,10 @@ api = Handler(bearer='bearer_token')
 api = Handler(public='public_key', private='private_key')
 ```
 
-## Requirements
-
-- Python 3+
+Methods are based off of the [TCG Player Docs](docs.tcgplayer.com/reference), but reformatted to be consistent with pep8 formatting.
+For example, the parameter "getExtendedFields" was renamed to "get_extended_fields". 
 
 ## License
 
 This program is licensed under the MIT license. Read more about that [here](https://opensource.org/licenses/MIT).
+
