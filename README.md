@@ -7,6 +7,7 @@ This library was written to allow easier interaction with the TCG Player API.
 
 - [Python 3+](https://www.python.org/)
 - [Git](https://git-scm.com/)
+- [requests](https://pypi.org/project/requests/)
 
 ## Installation
 
@@ -16,6 +17,7 @@ cd TCG.py
 python setup.py sdist
 cd dist
 pip install tcgplayer-1.0.tar.gz
+pip install requests
 ```
 
 ## Example
