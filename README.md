@@ -5,7 +5,18 @@ This library was written to allow easier interaction with the TCG Player API.
 
 ## Requirements
 
-- Python 3+
+- [Python 3+](https://www.python.org/)
+- [Git](https://git-scm.com/)
+
+## Installation
+
+```
+git clone https://github.com/voxelvortex/TCG.py.git
+cd TCG.py
+python setup.py sdist
+cd dist
+pip install tcgplayer-1.0.tar.gz
+```
 
 ## Example
 
