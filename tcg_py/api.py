@@ -243,3 +243,48 @@ class Handler(object):
     def list_conditions(self):
         url = "http://api.tcgplayer.com/{0}/catalog/conditions".format(self.version)
         return self.__request(url)
+
+    def get_product_list_by_id(self, product_list_id):
+        url = "http://api.tcgplayer.com/{0}/inventory/productlists/{1}".format(self.version, product_list_id)
+        return self.__request(url)
+
+    def get_product_list_by_key(self, product_list_key):
+        url = "http://api.tcgplayer.com/{0}/inventory/productlists/{1}".format(self.version, product_list_key)
+        return self.__request(url)
+
+    def list_all_product_lists(self):
+        url = "http://api.tcgplayer.com/{0}/inventory/productLists".format(self.version)
+        return self.__request(url)
+
+    def create_product_list(self, **kwargs):  # ######################## Unfinished ############################
+        #                                     https://docs.tcgplayer.com/reference#inventory_createproductlist-1
+        url = "http://api.tcgplayer.com/{0}/inventory/productLists".format(self.version)
+        return self.__request(url, method="POST")
+
+    def get_market_price_by_sku(self, product_condition_id):
+        url = "http://api.tcgplayer.com/{1}/pricing/marketprices/{1}".format(self.version, product_condition_id)
+        return self.__request(url)
+
+    def list_product_prices_by_group(self, group_id):
+        url = "http://api.tcgplayer.com/{0}/pricing/group/{1}".format(self.version, group_id)
+        return self.__request(url)
+
+    def list_product_market_prices(self, product_ids):
+        product_ids = self.__convert_list_to_str(product_ids)
+        url = "http://api.tcgplayer.com/{0}/pricing/product/{1}".format(self.version, product_ids)
+        return self.__request(url)
+
+    def list_sku_market_prices(self,sku_ids):
+        sku_ids = self.__convert_list_to_str(sku_ids)
+        url = "http://api.tcgplayer.com/{0}/pricing/sku/{1}".format(self.version, sku_ids)
+        return self.__request(url)
+
+    def list_product_buylist_prices(self, product_ids):
+        product_ids = self.__convert_list_to_str(product_ids)
+        url = "http://api.tcgplayer.com/{0}/pricing/buy/product/{1}".format(self.version, product_ids)
+        return self.__request(url)
+
+    def list_sku_buylist_prices(self, sku_ids):
+        sku_ids = self.__convert_list_to_str(sku_ids)
+        url = "http://api.tcgplayer.com/{0}/pricing/buy/sku/{1}".format(self.version, sku_ids)
+        return self.__request(url)
