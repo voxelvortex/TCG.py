@@ -37,7 +37,7 @@ class Handler(object):
             "Accept": "application/json",
             "Authorization": "bearer {0}".format(self.bearer)
         }
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories"
+        url = "http://api.tcgplayer.com/{0}/catalog/categories".format(self.version)
         response = requests.request("GET", url, headers=headers)
         data = json.loads(response.text)
         return data["success"]
@@ -69,6 +69,8 @@ class Handler(object):
     def __convert_list_to_str(self, item):
         return str(item).replace("[", "").replace("]", "")
 
+    ''' CATALOG CATALOG CATALOG CATALOG CATALOG CATALOG'''
+
     def list_categories(self, **kwargs):
         params = {}
         if "offset" in kwargs:
@@ -96,7 +98,7 @@ class Handler(object):
         return self.__request(url, headers)
 
     def search_category_products(self, category_id, **kwargs):
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories/{0}/search".format(category_id)
+        url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/search".format(self.version, category_id)
         data = {}
         if "offset" in kwargs:
             data["offset"] = kwargs["offset"]
@@ -115,7 +117,7 @@ class Handler(object):
         return self.__request(url, data=data, method="POST")
 
     def list_all_category_groups(self, category_id, **kwargs):
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories/{0}/groups".format(category_id)
+        url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/groups".format(self.version, category_id)
         params = {}
         if "offset" in kwargs:
             params["offset"] = kwargs["offset"]
@@ -125,23 +127,23 @@ class Handler(object):
         return self.__request(url, params=params)
 
     def list_all_category_rarities(self, category_id):
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories/{0}/rarities".format(category_id)
+        url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/rarities".format(self.version, category_id)
         return self.__request(url)
 
     def list_all_category_printings(self, category_id):
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories/{0}/printings".format(category_id)
+        url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/printings".format(self.version, category_id)
         return self.__request(url)
 
     def list_all_category_conditions(self, category_id):
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories/{0}/conditions".format(category_id)
+        url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/conditions".format(self.version, category_id)
         return self.__request(url)
 
     def list_all_category_languages(self, category_id):
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories/{0}/languages".format(category_id)
+        url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/languages".format(self.version, category_id)
         return self.__request(url)
 
     def list_all_category_media(self, category_id):
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/categories/{0}/media".format(category_id)
+        url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/media".format(self.version, category_id)
         return self.__request(url)
 
     def list_all_group_details(self, **kwargs):
@@ -168,7 +170,7 @@ class Handler(object):
 
     def get_group_details(self, group_id):
         group_id = self.__convert_list_to_str(group_id)
-        url = "http://api.tcgplayer.com/v1.19.0/catalog/groups/{0}".format(group_id)
+        url = "http://api.tcgplayer.com/{0}/catalog/groups/{1}".format(self.version, group_id)
         return self.__request(url)
 
     def list_all_group_media(self, group_id):
@@ -244,6 +246,8 @@ class Handler(object):
         url = "http://api.tcgplayer.com/{0}/catalog/conditions".format(self.version)
         return self.__request(url)
 
+    ''' INVENTORY INVENTORY INVENTORY INVENTORY INVENTORY'''
+
     def get_product_list_by_id(self, product_list_id):
         url = "http://api.tcgplayer.com/{0}/inventory/productlists/{1}".format(self.version, product_list_id)
         return self.__request(url)
@@ -260,6 +264,8 @@ class Handler(object):
         #                                     https://docs.tcgplayer.com/reference#inventory_createproductlist-1
         url = "http://api.tcgplayer.com/{0}/inventory/productLists".format(self.version)
         return self.__request(url, method="POST")
+
+    ''' PRICING PRICING PRICING PRICING PRICING'''
 
     def get_market_price_by_sku(self, product_condition_id):
         url = "http://api.tcgplayer.com/{1}/pricing/marketprices/{1}".format(self.version, product_condition_id)
@@ -288,3 +294,71 @@ class Handler(object):
         sku_ids = self.__convert_list_to_str(sku_ids)
         url = "http://api.tcgplayer.com/{0}/pricing/buy/sku/{1}".format(self.version, sku_ids)
         return self.__request(url)
+
+    ''' Stores Stores Stores Stores Stores Stores Stores'''
+
+    def batch_update_store_buylist_prices(self, store_key):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/buylist/skus/batch".format(self.version, store_key)
+        return self.__request(url, method="POST")
+
+    def create_sku_buylist(self, store_key, sku_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/buylist/skus/{2}".format(self.version, store_key, sku_id)
+
+        data = {}
+        if "price" in kwargs:
+            data["price"] = kwargs["price"]
+        if "quantity" in kwargs:
+            data["quantity"] = kwargs["quantity"]
+
+        return self.__request(url, data=data, method="PUT")
+
+    def update_sku_buylist_price(self, store_key, sku_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/buylist/skus/{2}/price".format(self.version, store_key, sku_id)
+
+        data = {}
+        if "sku_id" in kwargs:
+            data["skuId"] = kwargs["sku_id"]
+        if "price" in kwargs:
+            data["price"] = data["price"]
+
+        return self.__request(url, data=data, method="PUT")
+
+    def update_sku_buylist_quantity(self, store_key, sku_id):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/buylist/skus/{2}/quantity".format(self.version, store_key,
+                                                                                         sku_id)
+        return self.__request(url, method="PUT")
+
+    def get_buylist_categories(self, store_key):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/buylist/categories".format(self.version, store_key)
+        return self.__request(url)
+
+    def get_buylist_groups(self, store_key):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/buylist/groups".format(self.version, store_key)
+        return  self.__request(url)
+
+    def get_store_buylist_settings(self, store_key):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/buylist/settings".format(self.version, store_key)
+        return self.__request(url)
+
+    def search_stores(self, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores".format(self.version)
+
+        params = {}
+        if "name" in kwargs:
+            params["name"] = kwargs["name"]
+        if "address" in kwargs:
+            params["address"] = kwargs["address"]
+        if "city" in kwargs:
+            params["city"] = kwargs["city"]
+        if "state" in kwargs:
+            params["state"] = kwargs["state"]
+        if "zip_code" in kwargs:
+            params["zipCode"] = kwargs["zip_code"]
+        if "sort" in kwargs:
+            params["sort"] = kwargs["sort"]
+        if "offset" in kwargs:
+            params["offset"] = kwargs["offset"]
+        if "limit" in kwargs:
+            params["limit"] = kwargs["limit"]
+
+        return self.__request(url, params=params)
