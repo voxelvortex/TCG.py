@@ -362,3 +362,45 @@ class Handler(object):
             params["limit"] = kwargs["limit"]
 
         return self.__request(url, params=params)
+
+    def get_free_shipping_option(self, store_key, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/freeshipping/settings".format(self.version, store_key)
+
+        params = {}
+        if "offset" in kwargs:
+            params["offset"] = kwargs["offset"]
+        if "limit" in kwargs:
+            params["limit"] = kwargs["limit"]
+
+        return self.__request(url, params=params)
+
+    def get_store_address(self, store_key):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/address".format(self.version, store_key)
+        return self.__request(url)
+
+    def get_store_feedback(self, store_key):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/feedback".format(self.version, store_key)
+        return self.__request(url)
+
+    def set_store_status(self, store_key, status):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/status/{2}".format(self.version, store_key, status)
+        return self.__request(url, method="POST")
+
+    def get_customer_summary(self, store_key, token):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/customers/{2}".format(self.version, store_key, token)
+        return self.__request(url)
+
+    def search_store_customers(self, store_key, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/customers".format(self.version, store_key)
+
+        params = {}
+        if "name" in kwargs:
+            params["name"] = kwargs["name"]
+        if "email" in kwargs:
+            params["email"] = kwargs["email"]
+        if "offset" in kwargs:
+            params["offset"] in kwargs["offset"]
+        if "limit" in kwargs:
+            params["limit"] = kwargs["limit"]
+
+        return self.__request(url, params=params)
