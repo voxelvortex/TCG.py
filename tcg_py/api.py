@@ -5,7 +5,7 @@ import json
 class Handler(object):
 
     def __init__(self, **kwargs):
-        self.version = "v1.20.0"
+        self.version = "v1.27.0"
         if "version" in kwargs:
             self.version = kwargs["version"]
         if "bearer" in kwargs:
@@ -66,6 +66,16 @@ class Handler(object):
         data = json.loads(response.text)
         return data
 
+    def __to_camel_case(self, str):
+        components = str.split('_')
+        return components[0] + ''.join(x.title() for x in components[1:])
+
+    def __get_params(self, **kwargs):
+        params = {}
+        for item in kwargs:
+            params[self.__to_camel_case(item)] = kwargs[item]
+        return params
+
     def __convert_list_to_str(self, item):
         return str(item).replace("[", "").replace("]", "")
 
@@ -99,30 +109,13 @@ class Handler(object):
 
     def search_category_products(self, category_id, **kwargs):
         url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/search".format(self.version, category_id)
-        data = {}
-        if "offset" in kwargs:
-            data["offset"] = kwargs["offset"]
-        if "limit" in kwargs:
-            data["limit"] = kwargs["limit"]
-        if "sort" in kwargs:
-            data["sort"] = kwargs["sort"]
-        if "include_aggregates" in kwargs:
-            data["includeAggregates"] = kwargs["include_aggregates"]
-        if "name" in kwargs:
-            data["name"] = kwargs["name"]
-        if "values" in kwargs:
-            data["values"] = kwargs["values"]
-        if "filters" in kwargs:
-            data["filters"] = kwargs["filters"]
+        data = self.__get_params(**kwargs)
+
         return self.__request(url, data=data, method="POST")
 
     def list_all_category_groups(self, category_id, **kwargs):
         url = "http://api.tcgplayer.com/{0}/catalog/categories/{1}/groups".format(self.version, category_id)
-        params = {}
-        if "offset" in kwargs:
-            params["offset"] = kwargs["offset"]
-        if "limit" in kwargs:
-            params["limit"] = kwargs["limit"]
+        params = self.__get_params(**kwargs)
 
         return self.__request(url, params=params)
 
@@ -148,24 +141,8 @@ class Handler(object):
 
     def list_all_group_details(self, **kwargs):
         url = "http://api.tcgplayer.com/{0}/catalog/groups".format(self.version)
+        params = self.__get_params(**kwargs)
 
-        params = {}
-        if "category_id" in kwargs:
-            params["categoryId"] = kwargs["category_id"]
-        if "category_name" in kwargs:
-            params["categoryName"] = kwargs["category_id"]
-        if "is_supplemental" in kwargs:
-            params["isSupplemental"] = kwargs["is_supplemental"]
-        if "has_sealed" in kwargs:
-            params["hasSealed"] = kwargs["has_sealed"]
-        if "sort_desc" in kwargs:
-            params["sortDesc"] = kwargs["sort_desc"]
-        if "sort_order" in kwargs:
-            params["sortOrder"] = params["sort_order"]
-        if "offset" in kwargs:
-            params["offset"] = kwargs["offset"]
-        if "limit" in kwargs:
-            params["limit"] = kwargs["limit"]
         return self.__request(url, params=params)
 
     def get_group_details(self, group_id):
@@ -179,43 +156,20 @@ class Handler(object):
 
     def list_all_products(self, **kwargs):
         url = "http://api.tcgplayer.com/{0}/catalog/products".format(self.version)
-        params = {}
+        params = self.__get_params(**kwargs)
 
-        if "category_id" in kwargs:
-            params["categoryId"] = kwargs["category_id"]
-        if "category_name" in kwargs:
-            params["categoryName"] = kwargs["category_name"]
-        if "group_id" in kwargs:
-            params["groupId"] = kwargs["group_id"]
-        if "group_name" in kwargs:
-            params["groupName"] = kwargs["group_name"]
-        if "product_name" in kwargs:
-            params["productName"] = kwargs["product_name"]
-        if "get_extended_fields" in kwargs:
-            params["getExtendedFields"] = kwargs["get_extended_fields"]
-        if "product_types" in kwargs:
-            params["productTypes"] = self.__convert_list_to_str(kwargs["product_types"])
-        if "offset" in kwargs:
-            params["offset"] = kwargs["offset"]
-        if "limit" in kwargs:
-            params["limit"] = kwargs["limit"]
         return self.__request(url, params=params)
 
     def get_product_details(self, product_ids, **kwargs):
         product_ids = self.__convert_list_to_str(product_ids)
         url = "http://api.tcgplayer.com/{0}/catalog/products/{1}".format(self.version, product_ids)
-
-        params = {}
-        if "get_extended_fields" in kwargs:
-            params["getExtendedFields"] = kwargs["get_extended_fields"]
+        params = self.__get_params(**kwargs)
 
         return self.__request(url, params=params)
 
     def get_product_details_by_gtin(self, gtin, **kwargs):
         url = "http://api.tcgplayer.com/{0}/catalog/products/gtin/{0}".format(self.version, gtin)
-        params = {}
-        if "get_extended_fields" in kwargs:
-            params["getExtendedFields"] = kwargs["get_extended_fields"]
+        params = self.__get_params(**kwargs)
 
         return self.__request(url, params=params)
 
@@ -225,12 +179,7 @@ class Handler(object):
 
     def list_related_products(self, product_id, **kwargs):
         url = "http://api.tcgplayer.com/{0}/catalog/products/{1}/productsalsopurchased".format(self.version, product_id)
-
-        params = {}
-        if "limit" in kwargs:
-            params["limit"] = kwargs["limit"]
-        if "offset" in kwargs:
-            params["offset"] = kwargs["offset"]
+        params = self.__get_params(**kwargs)
 
         return self.__request(url, params=params)
 
@@ -259,11 +208,6 @@ class Handler(object):
     def list_all_product_lists(self):
         url = "http://api.tcgplayer.com/{0}/inventory/productLists".format(self.version)
         return self.__request(url)
-
-    def create_product_list(self, **kwargs):  # ######################## Unfinished ############################
-        #                                     https://docs.tcgplayer.com/reference#inventory_createproductlist-1
-        url = "http://api.tcgplayer.com/{0}/inventory/productLists".format(self.version)
-        return self.__request(url, method="POST")
 
     ''' PRICING PRICING PRICING PRICING PRICING'''
 
@@ -303,12 +247,7 @@ class Handler(object):
 
     def create_sku_buylist(self, store_key, sku_id, **kwargs):
         url = "http://api.tcgplayer.com/{0}/stores/{1}/buylist/skus/{2}".format(self.version, store_key, sku_id)
-
-        data = {}
-        if "price" in kwargs:
-            data["price"] = kwargs["price"]
-        if "quantity" in kwargs:
-            data["quantity"] = kwargs["quantity"]
+        data = self.__get_params(**kwargs)
 
         return self.__request(url, data=data, method="PUT")
 
@@ -342,35 +281,13 @@ class Handler(object):
 
     def search_stores(self, **kwargs):
         url = "http://api.tcgplayer.com/{0}/stores".format(self.version)
-
-        params = {}
-        if "name" in kwargs:
-            params["name"] = kwargs["name"]
-        if "address" in kwargs:
-            params["address"] = kwargs["address"]
-        if "city" in kwargs:
-            params["city"] = kwargs["city"]
-        if "state" in kwargs:
-            params["state"] = kwargs["state"]
-        if "zip_code" in kwargs:
-            params["zipCode"] = kwargs["zip_code"]
-        if "sort" in kwargs:
-            params["sort"] = kwargs["sort"]
-        if "offset" in kwargs:
-            params["offset"] = kwargs["offset"]
-        if "limit" in kwargs:
-            params["limit"] = kwargs["limit"]
+        params = self.__get_params(**kwargs)
 
         return self.__request(url, params=params)
 
     def get_free_shipping_option(self, store_key, **kwargs):
         url = "http://api.tcgplayer.com/{0}/stores/{1}/freeshipping/settings".format(self.version, store_key)
-
-        params = {}
-        if "offset" in kwargs:
-            params["offset"] = kwargs["offset"]
-        if "limit" in kwargs:
-            params["limit"] = kwargs["limit"]
+        params = self.__get_params(**kwargs)
 
         return self.__request(url, params=params)
 
@@ -392,15 +309,72 @@ class Handler(object):
 
     def search_store_customers(self, store_key, **kwargs):
         url = "http://api.tcgplayer.com/{0}/stores/{1}/customers".format(self.version, store_key)
+        params = self.__get_params(**kwargs)
 
-        params = {}
-        if "name" in kwargs:
-            params["name"] = kwargs["name"]
-        if "email" in kwargs:
-            params["email"] = kwargs["email"]
-        if "offset" in kwargs:
-            params["offset"] in kwargs["offset"]
-        if "limit" in kwargs:
-            params["limit"] = kwargs["limit"]
+        return self.__request(url, params=params)
+
+    def get_customer_addresses(self, store_key, token, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/customers/{2}/addresses".format(self.version, store_key, token)
+        params = self.__get_params(**kwargs)
+
+        return self.__request(url, params=params)
+
+    def get_customer_addresses(self, store_key, token, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/customers/{2}/orders".format(self.version, store_key, token)
+        params = self.__get_params(**kwargs)
+
+        return self.__request(url, params=params)
+
+    def get_store_info(self):
+        url = "http://api.tcgplayer.com/{0}/stores/self".format(self.version)
+
+        return self.__request(url)
+
+    def get_product_inventory_quantities(self, store_key, product_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/inventory/products/{2}/quantity".format(
+            self.version, store_key, product_id)
+        params = self.__get_params(**kwargs)
+
+        return self.__request(url, params=params)
+
+    def list_product_summary(self, store_key, product_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/inventory/products/{2}/quantity".format(
+            self.version, store_key, product_id)
+        params = self.__get_params(**kwargs)
+
+        return self.__request(url, params=params)
+
+    def list_product_skus(self, store_key, product_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/inventory/products/{2}/skus".format(
+            self.version, store_key, product_id)
+        params = self.__get_params(**kwargs)
+
+        return self.__request(url, params=params)
+
+    def list_related_products(self, store_key, product_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/inventory/products/{2}/relatedproducts".format(
+            self.version, store_key, product_id)
+        params = self.__get_params(**kwargs)
+
+        return self.__request(url, params=params)
+
+    def list_shopping_options(self, store_key, product_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/inventory/products/{2}/shippingoptions".format(
+            self.version, store_key, product_id)
+        params = self.__get_params(**kwargs)
+
+        return self.__request(url, params=params)
+
+    def get_sku_quantity(self, store_key, sku_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/inventory/skus/{2}/quantity".format(
+            self.version, store_key, sku_id)
+        params = self.__get_params(**kwargs)
+
+        return self.__request(url, params=params)
+
+    def increment_sku_inventory_quantity(self, store_key, sku_id, **kwargs):
+        url = "http://api.tcgplayer.com/{0}/stores/{1}/inventory/skus/{2}/quantity".format(
+            self.version, store_key, sku_id)
+        params = self.__get_params(**kwargs)
 
         return self.__request(url, params=params)
